@@ -1,0 +1,5 @@
+min_maki_version = "0.7.0"
+
+# P0 needs no capabilities (no fs/run/input/session/agent); keep the section so
+# the manifest shape matches other packages and future permissions have a home.
+[permissions]
