@@ -8,7 +8,7 @@ model as structured JSON.
 
 - **Three tools**: `ui_render` (show + wait), `ui_update` (patch a live card),
   `ui_close` (freeze it).
-- **One fixed catalog** of 15 components; no code generation, no sandbox.
+- **One fixed catalog** of 18 components; no code generation, no sandbox.
 - **No permissions**: the plugin does no I/O. The model fetches data with its
   other tools and passes it in the spec.
 - **Survives reloads and compaction**: cards are rebuilt from the tool input and
@@ -145,6 +145,7 @@ maki.pack.add({ "https://github.com/yonatanofek101/maki-genui" }, {
 | Option | Default | Meaning |
 | --- | --- | --- |
 | `live_actions` | `false` | Reserved (P2): let buttons in live cards notify the agent. Would need `session_write` in `plugin.toml`. Off, so no permission is requested. |
+| `live_inplace` | `true` | `ui_update` repaints the earlier card's buffer in place. Set `false` to always return a fresh card as the update's own body (the automatic fallback when an in-place repaint fails). |
 
 ## Tools
 
@@ -204,7 +205,7 @@ Patch a live card in place.
 | Field | Type | Meaning |
 | --- | --- | --- |
 | `id` | string (required) | Widget id given to or returned by `ui_render` (`mode: "live"`). |
-| `patch` | array of `{ "id", ...props }` | Shallow-merge props into the component with that id. Unknown id is a warning; other patches still apply. |
+| `patch` | array of `{ "id", ...props }` | Shallow-merge props into the component with that id. `{ "id", "append": "line" }` appends a line to a `text` component. Unknown id is a warning; other patches still apply. |
 | `root` | component | Replace the whole tree (re-validated, ids re-assigned). |
 | `title` | string | New title. |
 
@@ -234,6 +235,7 @@ rows); the interactive window uses its own width. `(req)` marks required props.
 | Type | Props | Value |
 | --- | --- | --- |
 | `stack` | `children` (req) | — |
+| `row` | `children` (req), `gap=2` — children side by side as equal columns (falls back to a stack when the columns would be too narrow) | — |
 | `section` | `title` (req), `collapsed=false`, `children` (req, non-empty) | — |
 | `text` | `text` (req), `tone="plain"` \| `info` \| `success` \| `warning` \| `error` \| `dim`, `markdown=true` | — |
 | `kv` | `items` (req): `[{key, value}]` or an object (sorted by key), `key_width` (auto, max 24) | — |
@@ -242,6 +244,8 @@ rows); the interactive window uses its own width. `(req)` marks required props.
 | `sparkline` | `values` (req, up to 200), `label` | — |
 | `progress` | `value` (req): `0..1` or `{done, total}`, `label`, `status="running"` \| `done` \| `error` | — |
 | `divider` | `label` | — |
+| `badge` | `text` (req), `tone="plain"` (same tones as `text`) | — |
+| `checklist` | `items` (req, up to 200): strings or `[{text, done=false}]` | — |
 | `diff` | `text` (req, unified diff) **or** `before` + `after` (+ `path`), `decide=false`, `max_lines=200` | `{"1":"accept","2":"reject"}` per hunk when `decide` |
 | `choice` | `label` (req), `options` (req, ≥ 1): strings or `{value, label, description}`, `multi=false`, `other=true`, `default`, `required=true` | `string` / `[string]` |
 | `input` | `label` (req), `placeholder`, `default`, `multiline=false`, `required=false`, `min_len`, `max_len`, `pattern` (ECMA regex), `pattern_hint` | `string` |
@@ -249,8 +253,7 @@ rows); the interactive window uses its own width. `(req)` marks required props.
 | `confirm` | `label` (req), `default=false` | `boolean` |
 | `actions` | `items` (req): `[{action, label, style="default"\|"primary"\|"danger"}]` | the pressed `action` in the result; `action: "cancel"` cancels without validating |
 
-Planned (P1): `row`, `badge`, `checklist`, table sorting, `append` patches for
-logs. Unknown types render as a placeholder today.
+Planned (P1): table sorting. Unknown types render as a placeholder today.
 
 ### Renders
 

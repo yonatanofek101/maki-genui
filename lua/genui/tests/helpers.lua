@@ -303,7 +303,11 @@ function Helpers.fake_buf()
     return handler(ev or {})
   end
 
+  -- Accepts a number or the real `Buf:click({ row = n })` shape.
   function buf:click(row)
+    if type(row) == "table" then
+      row = row.row
+    end
     return self:emit("click", { row = row })
   end
 
