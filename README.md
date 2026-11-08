@@ -1,5 +1,7 @@
 # maki-genui
 
+![maki-genui: generative UI for the maki coding agent, a form with a choice list, a table and a progress bar rendered in the terminal](assets/cover.png)
+
 Generative UI for [Maki](https://github.com/tontinton/maki): the agent describes a
 screen as a small JSON component tree, the plugin renders it as real terminal UI
 inside the chat (forms, pickers, tables with row selection, diff review, bar
@@ -109,22 +111,22 @@ and shown `✗ v<number>` under the field until it was fixed.
 
 Requires Maki 0.7.0 or later.
 
-Once published, add this to `~/.config/maki/init.lua`:
+Add this to `~/.config/maki/init.lua`, restart Maki and approve the install:
 
 ```lua
 maki.pack.add({ "https://github.com/yonatanofek101/maki-genui" })
 ```
 
-From a local checkout (the path is handed to `git clone`, so it **must be a git
-repository with at least one commit**; Maki installs a copy of the committed
-revision, not a symlink):
+**Dev loop.** To hack on the plugin, point Maki at a local checkout instead (the
+path is handed to `git clone`, so it **must be a git repository with at least
+one commit**; Maki installs a copy of the committed revision, not a symlink):
 
 ```lua
-maki.pack.add({ "/Users/yonatanofek/Projects/maki-genui" })
+maki.pack.add({ "/Users/you/Projects/maki-genui" })
 ```
 
-Restart Maki and approve the install. After every commit in the checkout run
-`/packupdate maki-genui` to pick it up; uncommitted edits are invisible to Maki.
+After every commit in the checkout run `/packupdate maki-genui` to pick it up;
+uncommitted edits are invisible to Maki.
 
 ### Permissions
 
