@@ -424,6 +424,16 @@ return function(h)
     h.eq(#Schema._json_errors("ui_render", { root = { type = "text" } }), 0)
   end)
 
+  h.case("tool schemas stay open so maki keeps nested props", function()
+    -- maki rebuilds an object from a declared `properties` list and drops
+    -- every other key ("dropped unknown tool parameter"). An object schema
+    -- with no `properties` keeps them all, which is what these three need.
+    local props = Schema.TOOL_SCHEMAS.ui_update.properties
+    h.eq(Schema.TOOL_SCHEMAS.ui_render.properties.root.properties, nil, "ui_render.root")
+    h.eq(props.patch.items.properties, nil, "ui_update.patch.items")
+    h.eq(props.root.properties, nil, "ui_update.root")
+  end)
+
   h.case("fixtures from helpers validate", function()
     local names = { "form", "table", "diff", "dashboard", "report" }
     for _, name in ipairs(names) do

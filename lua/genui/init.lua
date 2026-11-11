@@ -252,6 +252,20 @@ local function ui_update(input, ctx)
   if has_patch == has_root then
     return error_reply("give exactly one of patch or root")
   end
+  -- The tool schema leaves patch items open so their props survive, so the
+  -- id check lives here instead of in the JSON Schema.
+  if has_patch then
+    local items = Schema._densify(type(input.patch) == "table" and input.patch or {})
+    for i, item in ipairs(items) do
+      if type(item) ~= "table" then
+        return error_reply(string.format("patch[%d]: expected an object", i - 1))
+      end
+      local pid = str(item.id)
+      if not pid or pid == "" then
+        return error_reply(string.format("patch[%d].id is required", i - 1))
+      end
+    end
+  end
 
   local new_spec, warnings =
     Schema.apply_patch(entry.spec, has_patch and input.patch or nil, has_root and input.root or nil)
