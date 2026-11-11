@@ -290,7 +290,7 @@ return function(h)
 
   -- number -------------------------------------------------------------------
 
-  h.case("number: <Up> steps, clamps to max/min, typed digits filtered", function()
+  h.case("number: <Right>/<Left> step, clamp, typed digits filtered, arrows move", function()
     local st = Form._initial_state(single({
       type = "number",
       id = "replicas",
@@ -302,14 +302,17 @@ return function(h)
       integer = true,
     }))
     h.eq(Form._values(st).replicas, 3)
-    st = press(st, { "<Up>" })
+    st = press(st, { "<Right>" })
     h.eq(Form._values(st).replicas, 4)
-    st = press(st, { "<Up>", "<Up>", "<Up>", "<Up>", "<Up>", "<Up>", "<Up>" })
+    st = press(st, { "<Up>" })
+    h.eq(st.focus, 3, "<Up> wraps to the last focusable, it does not step")
+    h.eq(Form._values(st).replicas, 4)
+    st = press(st, { "<Right>", "<Right>", "<Right>", "<Right>", "<Right>", "<Right>", "<Right>" })
     h.eq(Form._values(st).replicas, 10, "clamped at max")
     st = press(st, { "<C-u>", "9", "9" })
     h.eq(Form._values(st).replicas, 99)
     h.eq(Form._validate(st).replicas, "must be ≤ 10")
-    st = press(st, { "<Down>" })
+    st = press(st, { "<Left>" })
     h.eq(Form._values(st).replicas, 10, "stepping clamps back into range")
     st = press(st, { "<C-u>", "x", ".", "2" })
     h.eq(Form._values(st).replicas, 2, "letters and '.' (integer) are dropped")
@@ -322,8 +325,10 @@ return function(h)
     local st = Form._initial_state(single({ type = "number", id = "n", label = "N", step = 0.5 }))
     st = press(st, { "-", "2" })
     h.eq(Form._values(st).n, -2)
-    st = press(st, { "<Up>" })
+    st = press(st, { "<Right>" })
     h.eq(Form._values(st).n, -1.5)
+    st = press(st, { "<Down>" })
+    h.eq(Form._values(st).n, -1.5, "<Down> moves focus, it does not step")
     h.eq(Form._validate(st).n, nil)
   end)
 
