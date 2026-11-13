@@ -586,10 +586,16 @@ local function number_step(ws, comp, dir)
 end
 
 function Number.handle_key(ws, comp, key)
-  if key == "<Up>" or key == "+" then
+  -- Arrow up/down move between fields, as in every other widget. The step
+  -- keys are left/right and +/-, so the arrows stay free for navigation.
+  if key == "<Up>" then
+    return "prev"
+  elseif key == "<Down>" then
+    return "next"
+  elseif key == "+" or key == "<Right>" then
     number_step(ws, comp, 1)
     return "consumed"
-  elseif key == "<Down>" then
+  elseif key == "<Left>" then
     number_step(ws, comp, -1)
     return "consumed"
   elseif key == "-" then

@@ -28,7 +28,7 @@ Form.FOOTER_BY_TYPE = {
   diff = { { "a / r", "accept / reject" }, { "Space", "cycle" }, { "Tab", "next" }, { "Esc", "cancel" } },
   actions = { { "Enter", "press" }, { "← →", "move" }, { "Tab", "next" }, { "Esc", "cancel" } },
   submit_row = { { "Enter", "press" }, { "← →", "move" }, { "S-Tab", "back" }, { "Esc", "cancel" } },
-  number = { { "↑↓ + -", "step" }, { "Enter", "next" }, { "Tab", "next" }, { "Esc", "cancel" } },
+  number = { { "← → + -", "step" }, { "↑↓", "move" }, { "Enter", "next" }, { "Esc", "cancel" } },
   confirm = { { "Space y n", "toggle" }, { "Enter", "next" }, { "Tab", "next" }, { "Esc", "cancel" } },
 }
 
