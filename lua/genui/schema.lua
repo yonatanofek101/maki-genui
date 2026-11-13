@@ -243,17 +243,6 @@ Schema.CATALOG = {
   unknown = { props = {} },
 }
 
-local function catalog_line()
-  local names = {}
-  for name in pairs(Schema.CATALOG) do
-    if name ~= "unknown" then
-      names[#names + 1] = name
-    end
-  end
-  table.sort(names)
-  return table.concat(names, ", ")
-end
-
 local ROOT_DESCRIPTION = table.concat({
   "Component tree. Every component: {type, id?, hidden?}. Containers (children: Component[]):",
   "stack{children}; row{children, gap=2}; section{title, collapsed=false, children}.",
@@ -287,10 +276,10 @@ Schema.TOOL_SCHEMAS = {
         default = "auto",
         description = "auto: interactive when any input component exists, else display. live: patchable with ui_update.",
       },
+      -- No `properties`: maki parses that shape as an open object and keeps
+      -- every key. A declared property list makes it drop the rest.
       root = {
         type = "object",
-        required = { "type" },
-        properties = { type = { type = "string", description = "One of: " .. catalog_line() } },
         description = ROOT_DESCRIPTION,
       },
     },
@@ -303,7 +292,9 @@ Schema.TOOL_SCHEMAS = {
       patch = {
         type = "array",
         description = "Array of {id, ...props} merged into the component with that id. {id, append: string} appends a line to a text component.",
-        items = { type = "object", required = { "id" }, properties = { id = { type = "string" } } },
+        -- Open object for the same reason: a `properties` list would strip
+        -- every prop the patch carries. ui_update checks `id` itself.
+        items = { type = "object", description = "One {id, ...props} patch item" },
       },
       root = { type = "object", description = "Replace the whole component tree" },
       title = { type = "string" },
